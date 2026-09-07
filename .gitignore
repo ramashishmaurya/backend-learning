@@ -1,2 +1,22 @@
-/design 
-.design
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environment
+env/
+.venv/
+venv/
+
+# Alembic environment
+.alembic/
+alembic.env
+
+# Design files
+.design/
+
+# Local config
+alembic.ini
+
+__pycache__/
+*.pyc
