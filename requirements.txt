@@ -7,3 +7,7 @@ pydantic
 # For AI
 langchain
 openai
+
+python-jose[cryptography]
+
+passlib[bcrypt]
