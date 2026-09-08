@@ -2,9 +2,14 @@ import select
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from auth import get_db
-from auth import User
+from auth import get_db 
+from auth import User , Responsemodel
 from auth import CreateUser
+from jose import jwt 
+
+from datetime import datetime, timedelta, timezone
+
+from auth import hash_password , verify_password
 
 app = FastAPI()
 
@@ -16,7 +21,7 @@ async def create_user(
     new_user = User(
         name = user.name , 
         email = user.email , 
-        password = user.password
+        password = hash_password(user.password)
 
     )
 
@@ -32,18 +37,33 @@ async def create_user(
     
     }
 
+SECRET_KEYS = "8zxHBOkiYT5roos1I6hKs1qxluBT9Z7JzG8DfUXrpVU"
+ALGORITHM = "HS256"
+EXCESS_EXPIRY_MINUTES = 30 
 
-@app.get("/getdata/")
-async def get_information(db : AsyncSession = Depends(get_db)
+def create_access_token(data : dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=30)
+
+    to_encode.update({'exp' : expire})
+
+    encode_jwt = jwt.encode(to_encode , SECRET_KEYS , algorithm=ALGORITHM)
+
+    return encode_jwt
+
+
+
+@app.get("/getdata/", response_model=list[Responsemodel])  
+async def get_information(
+    db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(
-    select(User)
-)
+        select(User)
+    )
+
     user = result.scalars().all()
 
-    return{
-        "data" : user
-    }
+    return user
     
 
 @app.get("/pdata/{id}/")
