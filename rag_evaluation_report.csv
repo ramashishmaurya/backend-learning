@@ -1,0 +1,2 @@
+,user_input,retrieved_contexts,response,reference,faithfulness,answer_relevancy,context_precision
+0,How many sick leaves do I get in a year?,"['According to the 2024 HR policy, every employee is entitled to 12 sick leaves.', 'Leaves cannot be carried forward to the next year.']",You get 12 sick leaves in a calendar year according to the HR policy.,Employees are entitled to 12 sick leaves per year.,,,
