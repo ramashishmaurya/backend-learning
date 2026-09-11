@@ -9,7 +9,7 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("OPENAI_API_KEY")
 from datasets import Dataset
 from ragas import evaluate
 
-# 2. Warning Fix: Naye RAGAS version mein metrics ab yahan se import hoti hain
+# 2. Warning Fix: Naye RAGAS version mein metrics ab y ahan se import hoti hain
 from ragas.metrics.collections import faithfulness, answer_relevancy, context_precision
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 

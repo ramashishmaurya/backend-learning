@@ -11,3 +11,6 @@ openai
 python-jose[cryptography]
 
 passlib[bcrypt]
+
+#  this is use for the make table schema when data us already presend in database 
+sqlacodegen 

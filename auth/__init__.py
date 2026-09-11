@@ -3,3 +3,5 @@ from .auth_table import User
 from .schemas import CreateUser , Backgroundswork
 from .schemas import CreateUser , Responsemodel , LoginRequest , Updateinformation
 from .utils import hash_password , verify_password
+
+from .models_generated import Project , Sales , Orders ,Employee ,Department

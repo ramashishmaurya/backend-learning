@@ -9,7 +9,6 @@ def splitnamecharater(name):
 mapfunction = list(map(splitnamecharater , "ashish"))
 
 
-
 users = [
     {"name": "Aman", "email": "aman@gmail.com"},
     {"name": "Neha", "email": "neha@yahoo.com"},
