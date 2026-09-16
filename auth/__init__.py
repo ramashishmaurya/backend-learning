@@ -5,3 +5,5 @@ from .schemas import CreateUser , Responsemodel , LoginRequest , Updateinformati
 from .utils import hash_password , verify_password
 
 from .models_generated import Project , Sales , Orders ,Employee ,Department
+
+from .celery_app import celery_app
