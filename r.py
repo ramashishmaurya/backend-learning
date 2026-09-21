@@ -75,6 +75,3 @@ def postinformation(user_id : int):
         "posts" : []
     })
 
-app.include_router(post_routes)
-
-

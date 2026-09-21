@@ -27,3 +27,4 @@ async def fetchedinformation(db :AsyncSession = Depends(get_db)):
 
     return b
 
+
