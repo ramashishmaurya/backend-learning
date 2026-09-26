@@ -32,7 +32,6 @@ As an AI Engineer, your backend needs to be fast, asynchronous, and capable of h
 ```
 
 ---
-
 ## 🛠️ Getting Started
 
 ### 1. Prerequisites
