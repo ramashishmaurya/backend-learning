@@ -15,7 +15,6 @@ As an AI Engineer, your backend needs to be fast, asynchronous, and capable of h
 - **AI Tooling**: Integrated with `langchain` and `openai` for LLM orchestration and inference.
 
 ---
-
 ## 📂 Project Structure
 
 ```text
