@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from schemas import CharRequest
+from app import CharRequest
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

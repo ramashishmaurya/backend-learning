@@ -8,4 +8,4 @@ class Chathistory(Base):
     user_query = Column(str)
     ai_response = Column(Text)
 
-    
+

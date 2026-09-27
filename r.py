@@ -63,7 +63,6 @@ def dyanmicname(id_name : int):
 
 
 from fastapi import APIRouter
-
 post_routes = APIRouter(
     prefix="/{user_id}/posts"
 )
@@ -74,4 +73,6 @@ def postinformation(user_id : int):
         "user_id" : user_id , 
         "posts" : []
     })
+
+
 

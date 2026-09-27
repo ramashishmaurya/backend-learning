@@ -1,0 +1,19 @@
+[project]
+name = "backend-learning"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg",
+    "fastapi",
+    "langchain",
+    "openai",
+    "passlib[bcrypt]",
+    "pydantic",
+    "python-dotenv",
+    "python-jose[cryptography]",
+    "sqlacodegen",
+    "sqlalchemy[asyncio]",
+    "uvicorn",
+]
