@@ -1,29 +1,29 @@
-# def function(func):
+def function(func):
 
-#     def dealwithperson(fuck):
-#         def wrapper():
-#             print("hellp=o ji ")
-#             func()
-#             print("bye ji")
-#             fuck()
-#         return wrapper
-#     return dealwithperson
-
-
-# def func():
-#     print("this is func function right")
-
-# @function(func)
-# def fuck():
-#     print('function of fuck')
-
-# fuck()
+    def dealwithperson(fuck):
+        def wrapper():
+            print("hellp=o ji ")
+            func()
+            print("bye ji")
+            fuck()
+        return wrapper
+    return dealwithperson
 
 
-# def arguments(*args):
-#     print(args)
+def func():
+    print("this is func function right")
 
-# arguments(12,12,4)
+@function(func)
+def fuck():
+    print('function of fuck')
+
+fuck()
+
+
+def arguments(*args):
+    print(args)
+
+arguments(12,12,4)
 
 from sqlalchemy.ext.asyncio import create_async_engine , AsyncSession
 from fastapi import FastAPI , Depends
@@ -73,6 +73,5 @@ def postinformation(user_id : int):
         "user_id" : user_id , 
         "posts" : []
     })
-
 
 
