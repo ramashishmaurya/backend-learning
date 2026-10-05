@@ -123,7 +123,7 @@ async def main():
                 GetWeatherTool(),
                 DropDatabaseTool()
             ],
-            agent_type="function_calling",  # 👈 ADDED THIS LINE to prevent hallucination
+            agent_type="function_calling", 
             system_prompt=(
                 "You are a helpful database and weather assistant. "
                 "You MUST use the get_weather tool for weather questions. "
