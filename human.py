@@ -99,45 +99,37 @@ async def main():
         api_key=api_key,
     )
 
-    # 2. Setup Tools & Bind them to the Brain
-    tools = [GetWeatherTool(), DropDatabaseTool()]
-    llm_with_tools = llm.bind_tools(tools)
-
-    # 3. Create the "Brain" Node
-    async def call_model(state: State):  
-        system_prompt = (
-            "You are a helpful database and weather assistant. "
-            "You MUST use the get_weather tool for weather questions. "
-            "You MUST use the drop_database_table tool when the user asks to delete a table. "
-            "NEVER claim that a database table was deleted without calling the tool. "
-            "When the user asks to delete a table, you MUST IMMEDIATELY call the tool. "
-            "DO NOT ask the user for confirmation in the chat. Just call the tool right away!"
+    # Create agent with both tools
+    agent = AgentExecutor(
+        AgentConfig(
+            llm=llm,
+            tools=[
+                GetWeatherTool(),
+                DropDatabaseTool()
+            ],
+            agent_type="function_calling",  # 👈 ADDED THIS LINE to prevent hallucination
+            system_prompt=(
+                "You are a helpful database and weather assistant. "
+                "You MUST use the get_weather tool for weather questions. "
+                "You MUST use the drop_database_table tool when the user asks "
+                "to delete, drop, or remove a database table. "
+                "NEVER claim that a database table was deleted without calling "
+                "the drop_database_table tool. "
+                "The drop_database_table tool requires human approval before "
+                "it can execute."
+            )
         )
-        
-        # Inject System Prompt at the beginning of the messages list
-        messages = [{"role": "system", "content": system_prompt}] + state["messages"] 
-        
-        # Ask LLM for the next move
-        response = await llm_with_tools.ainvoke(messages)
-        
-        # Return the new AI message so it gets added to the 'State'
-        return {"messages": [response]}
+    )
 
+    # ========================================================
+    # TEST 1 — LOW RISK
+    # ========================================================
 
-    # 4. Create the Routing Logic (if/else)
-    def should_continue(state:  State):
-        # Check the very last message in the chat
-        last_message = state["messages"][-1] 
-         
-        # If the LLM decided to use a tool, go to the 'tools' node
-        if last_message.tool_calls:
-            return "tools"
-        # If no tool was called, the conversation is done! End the graph.
-        return END
+    # print("\n--- TEST 1: Low Risk Task ---")
 
-
-    # 5. Build the Final Graph (This replaces AgentExecutor!)
-    workflow = StateGraph(State)
+    # response1 = await agent.run(
+    #     "What is the weather in Mumbai?"
+    # )
 
     # Add Nodes
     workflow.add_node("agent", call_model)
