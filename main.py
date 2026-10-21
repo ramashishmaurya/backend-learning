@@ -19,7 +19,7 @@ load_dotenv()
 # 1. Configure Groq LLM
 # -----------------------------
 
-api_key = os.getenv("GROQ_API_KEY")
+api_key = os.getenv("GROQ_API_KEY")  # calling the api form the . env file and use in the llm 
 
 llm = Groq(
     model="openai/gpt-oss-120b",

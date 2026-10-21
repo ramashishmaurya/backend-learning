@@ -20,5 +20,7 @@ class Updateinformation(BaseModel):
     email : EmailStr
 
 class Backgroundswork(BaseModel):
-    email : str 
-    
+    email : str
+
+
+

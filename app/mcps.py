@@ -114,23 +114,43 @@
 
 # count the frequency bhai okay 
 
-name = "Ashish"
+# name = "Ashish"
 
-def countletter(name)  :
+# def countletter(name)  :
 
-    result = {}
+#     result = {}
 
-    for i in name : 
+#     for i in name : 
 
-        if i not in result : 
+#         if i not in result : 
 
-            result[i] = 1 
-        else:
+#             result[i] = 1 
+#         else:
 
-          result[i]+= 1  
+#           result[i]+= 1  
 
-    return result
+#     return result
 
-print(countletter(name))
+# print(countletter(name))
 
- 
+
+# heights = [7, 3, 6, 4, 6, 2]
+
+# def rainwatertrapped(height):
+#     rainwatertrapped = 0
+
+#     for n in range(len(height)):
+#         left_max = max(height[:n+1])  
+#         right_max = max(height[n:])
+
+#         waterlevel = min(left_max, right_max)
+
+#         rainwatertrapped += max(0, waterlevel - height[n])
+
+#     return rainwatertrapped
+
+# print(rainwatertrapped(heights))
+
+
+# here we are learning the insertion algorith bhai okay 
+
