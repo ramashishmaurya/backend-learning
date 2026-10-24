@@ -1,5 +1,5 @@
 import asyncio
-from fastmcp import Client
+from fastmcp import Client , client # 
 
 async def main():
     # 1. Apne chal rahe HTTP server se connect karo
@@ -10,7 +10,8 @@ async def main():
 
         # 3. Tool ko call karo
         result = await client.call_tool("get_weather", {"city": "Mumbai"})
-        print("Response from server:", result)
+        print("Response from server:", result.data)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

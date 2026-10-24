@@ -1,15 +1,15 @@
-# from fastmcp import FastMCP
+from fastmcp import FastMCP
 
-# mcp = FastMCP("My Assistant Tools 🚀")
+mcp = FastMCP("My Assistant Tools 🚀")
 
-# @mcp.tool
-# def get_weather(city: str) -> str:
-#     """Get the current weather for a given city."""
-#     return f"Weather in {city}: 24°C, Sunny"
+@mcp.tool
+def get_weather(city: str) -> str:
+    """Get the current weather for a given city."""
+    return f"Weather in {city}: 24°C, Sunny"
 
-# if __name__ == "__main__":
-#     # HTTP server start karega port 8000 pe
-#     mcp.run(transport="http", port=8000)  # runs on streaming 
+if __name__ == "__main__":
+    # HTTP server start karega port 8000 pe
+    mcp.run(transport="http", port=8000)  # runs on streaming 
 
  
 #arrasts = [5 , 3 , 2 , 1]  # byusing the help of index here i will insert here okay bhau right okay bhai right

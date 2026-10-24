@@ -1,20 +1,16 @@
-# from fastapi import FastAPI
-# from app import CharRequest
+from fastapi import FastAPI
+from app import CharRequest
 
-# from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
-# app = FastAPI()
-
-
-# @app.post("/api/chat/")
-# def charrequestdata(state : CharRequest) :
-#     return{
-#         "user_id" : state.user_id , 
-#         "question" : state.query
-#     }
+app = FastAPI()
 
 
-
-
+@app.post("/api/chat/")
+def charrequestdata(state : CharRequest) :
+    return{
+        "user_id" : state.user_id , 
+        "question" : state.query
+    }
 
 
