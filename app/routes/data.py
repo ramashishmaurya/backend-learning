@@ -189,25 +189,97 @@ data = [1 , 0 , 4 , 7 , 8 , 3 ]
 
 # findmissingnumber(data)
 
-data = "aabbcddex"
+# data = "aabbcddex"
 
 
-def non_repeting_values(data) :
+# def non_repeting_values(data) :
 
-    for i in data :  # has s will be i = i 
-        count = 0 
+#     for i in data :  # has s will be i = i 
+#         count = 0 
 
-        for j  in data :  
+#         for j  in data :  
 
 
-            if i == j :
+#             if i == j :
 
-                count+=1
+#                 count+=1
 
-        if count == 1  :  # that valeus presend only once okay  maea of count is 1 - retun ths ola 
-           return i
+#         if count == 1  :  # that valeus presend only once okay  maea of count is 1 - retun ths ola 
+#            return i
         
-    return None
+#     return None
 
-print(non_repeting_values(data))
+# print(non_repeting_values(data))
+
+# name = "Ashish"
+
+# b = "".join([i.upper()  for i in name])
+
+# print(b) 
+
+
+# this is was main focused as right hwatu i can di as make sense as right good right as make sens as rigth bhaihow how i can do right okay 
+# countlowevaleus present 
+
+# name = "AshishMaurya"
+
+# counts = 0 
+# vowels = ['e' , 'e' , 'i' , 'o' ,'u']
+
+# for i in name :
+
+#     if i in vowels:
+#         counts+=1 
+# print(counts)
+
+# factorial number 
+
+# n = 4 
+
+# def factorial(n) :
+
+#     if n ==1 or n ==0 :
+#         return 1 
+    
+#     else:
+
+#         return n * factorial(n-1)
+    
+# print(factorial(n))
+
+
+
+# nums = [1,3,5,6]
+# target = 5
+
+# for i in range(len(nums)) :
+
+#     if nums[i]  == target :
+#         print(i)
+
+
+nums = [1,3,5,7]
+
+def searchindexnumber(number , target) :  # search on the index tghat mattered okmay 
+
+    left = 0 
+    right = len(number) - 1 
+
+    while left <= right :
+
+        midpoint = (left + right) // 2 
+
+        if number[midpoint] == target :
+            return midpoint  # there will be index bhai so when left <= right fasksi that index place to insert values okay 
+        
+        if number[midpoint] < target :
+            left = midpoint + 1 # there is the logic impliment righ tbhai so ths algorith worked right  
+        
+        else:  # as here could be same condition whwere the both  false trues 
+
+            right = midpoint - 1 
+
+    return left
+
+print(searchindexnumber(nums , 2))
 
