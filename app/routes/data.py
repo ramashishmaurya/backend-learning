@@ -258,28 +258,30 @@ data = [1 , 0 , 4 , 7 , 8 , 3 ]
 #         print(i)
 
 
-nums = [1,3,5,7]
+# nums = [1,3,5,7]
 
-def searchindexnumber(number , target) :  # search on the index tghat mattered okmay 
+# def searchindexnumber(number , target) :  # search on the index tghat mattered okmay 
 
-    left = 0 
-    right = len(number) - 1 
+#     left = 0 
+#     right = len(number) - 1 
 
-    while left <= right :
+#     while left <= right :
 
-        midpoint = (left + right) // 2 
+#         midpoint = (left + right) // 2 
 
-        if number[midpoint] == target :
-            return midpoint  # there will be index bhai so when left <= right fasksi that index place to insert values okay 
+#         if number[midpoint] == target :
+#             return midpoint  # there will be index bhai so when left <= right fasksi that index place to insert values okay 
         
-        if number[midpoint] < target :
-            left = midpoint + 1 # there is the logic impliment righ tbhai so ths algorith worked right  
+#         if number[midpoint] < target :
+#             left = midpoint + 1 # there is the logic impliment righ tbhai so ths algorith worked right  
         
-        else:  # as here could be same condition whwere the both  false trues 
+#         else:  # as here could be same condition whwere the both  false trues 
 
-            right = midpoint - 1 
+#             right = midpoint - 1 
 
-    return left
+#     return left
 
-print(searchindexnumber(nums , 2))
+# print(searchindexnumber(nums , 2))
+
+# once we solved thei bhai f 1 = 1 send to the valeus stack like f-2 okay 
 
