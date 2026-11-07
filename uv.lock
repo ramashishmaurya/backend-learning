@@ -276,6 +276,7 @@ dependencies = [
     { name = "llama-index-readers-file" },
     { name = "openai" },
     { name = "passlib", extra = ["bcrypt"] },
+    { name = "prefab-ui" },
     { name = "pydantic" },
     { name = "pymupdf" },
     { name = "python-dotenv" },
@@ -304,6 +305,7 @@ requires-dist = [
     { name = "llama-index-readers-file", specifier = ">=0.7.0" },
     { name = "openai" },
     { name = "passlib", extras = ["bcrypt"] },
+    { name = "prefab-ui", specifier = ">=0.20.2" },
     { name = "pydantic" },
     { name = "pymupdf", specifier = ">=1.28.2" },
     { name = "python-dotenv" },
@@ -2998,6 +3000,20 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/42/23/4a86fc741c38c5b69792a4ef954b281afa69bea9f083f881de1b0d23bc07/platformdirs-4.12.3.tar.gz", hash = "sha256:427fc0bb321ae0c5b037fa03238ca74820437be162e78b4848c4d4055b9b766c", size = 59538, upload-time = "2026-10-03T23:40:46.595Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c5/9b/6ce1ead737fe496611bda600c263b9a11ae7bd8f41bb13f9bd7e0a2c37a4/platformdirs-4.12.3-py3-none-any.whl", hash = "sha256:080f3b39423b5abfca9a23d84c4e9795f54d395cd8459867a8ded44084fcd5f8", size = 32493, upload-time = "2026-10-03T23:40:45.104Z" },
+]
+
+[[package]]
+name = "prefab-ui"
+version = "0.20.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cyclopts" },
+    { name = "pydantic" },
+    { name = "rich" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/41/99/4e61eb3d3f8b09bdaa28bda3c99971264555f486a485333cb8e6f56c7d8c/prefab_ui-0.20.2.tar.gz", hash = "sha256:4ac17ebf8ec1c5a918a188625837fc608157907430a59c4feb8adac80e01262b", size = 4118979, upload-time = "2026-06-03T02:13:49.312Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4a/d0/59b697dd5a44e632fcc4aba42ff5f88224df672ffea1f5e9a5a9e9e50698/prefab_ui-0.20.2-py3-none-any.whl", hash = "sha256:861d4914e4d9120996b4d5c6753788beeca433754d7bb3cfbd13f9dba7ea8e85", size = 1852274, upload-time = "2026-06-03T02:13:47.539Z" },
 ]
 
 [[package]]

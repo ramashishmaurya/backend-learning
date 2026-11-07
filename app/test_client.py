@@ -1,5 +1,5 @@
 import asyncio
-from fastmcp import Client , client # 
+from fastmcp import Client , client 
 
 async def main():
     # 1. Apne chal rahe HTTP server se connect karo
@@ -15,3 +15,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

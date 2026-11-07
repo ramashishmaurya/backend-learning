@@ -20,6 +20,7 @@ dependencies = [
     "llama-index-readers-file>=0.7.0",
     "openai",
     "passlib[bcrypt]",
+    "prefab-ui>=0.20.2",
     "pydantic",
     "pymupdf>=1.28.2",
     "python-dotenv",

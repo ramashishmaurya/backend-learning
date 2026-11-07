@@ -86,18 +86,74 @@
 # print(secondhighestnumber(number))
 
 
-name = "Apnacollage".strip().lower()
+# name = "Apnacollage".strip().lower()
 
-def duplicatedstring(name) :
+# def duplicatedstring(name) :
 
-    character = ""
+#     character = ""
 
-    for i in name :
+#     for i in name :
 
-        if i not in character :
+#         if i not in character :
 
-            character += i   # checking of valeus not present do this okay  right 
+#             character += i   # checking of valeus not present do this okay  right 
         
-    return character
+#     return character
 
-print(duplicatedstring(name))
+# print(duplicatedstring(name))
+
+
+# remove d uplicated 
+
+# def removeduplicated(name) :
+
+#     sets = set()
+#     result = []
+
+#     for  i in name :
+#         if i  not in sets :  # need to underatsna how i can do this program as well oaky 
+#             result.append(i)
+#             sets.add(i)
+        
+#     return "".join(result)
+
+
+# print(removeduplicated("Banana"))
+
+# def partcouplepair(n : int) -> int :
+
+#     if (n==1 or n == 2 ) :  # if there is two people has to 2 ways okay 
+
+#         return n 
+
+#     else:
+
+#         return partcouplepair(n-1) +(n-1) * partcouplepair(n-2)
+    
+
+# print(partcouplepair(2))
+
+
+# def functiongetdata():
+#     return "getting data from function as followed righ  okay"
+
+
+# from fastapi import BackgroundTasks , FastAPI 
+
+
+# def functiontaskadd( backgroundtask : BackgroundTasks):
+
+#     backgroundtask.add_task(functiongetdata) 
+
+
+def numberadd(x) :
+
+    return x + 2 
+
+def test_answer():
+    assert numberadd(3) == 5 
+
+
+test_answer()
+
+

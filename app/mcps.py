@@ -1,156 +1,57 @@
-from fastmcp import FastMCP
+from fastmcp import FastMCP, FastMCPApp
+from prefab_ui.app import PrefabApp
+from prefab_ui.actions import ShowToast
+from prefab_ui.actions.mcp import CallTool
+from prefab_ui.components import Button, Card, CardContent, Column, Heading, Text
 
-mcp = FastMCP("My Assistant Tools 🚀")
+app = FastMCPApp("toolsui")
+
+
+@app.tool()
+def process_payment(amount: str) -> str:
+    """Payment process karne wala backend tool."""
+    return f"Payment of Rs. {amount} Successful!"
+
+
+@app.ui()
+def show_payment_screen(amount: str = "500") -> PrefabApp:
+    """Payment UI screen"""
+
+    with Column(gap=4, css_class="p-6") as view:
+        with Card():
+            with CardContent():
+                Heading("FastMCP Payment Gateway")
+                Text(f"Do you want to pay Rs. {amount} now?")
+
+                Button(
+                    "Pay Now",
+                    on_click=[
+                        CallTool(
+                            process_payment,
+                            arguments={"amount": amount},
+                            on_success=ShowToast(
+                                "Payment Processed!",
+                                variant="success",
+                            ),
+                        ),
+                    ],
+                )
+
+    return PrefabApp(view=view)
+
+
+mcp = FastMCP("My Assistant Tools", providers=[app])
 
 @mcp.tool
 def get_weather(city: str) -> str:
-    """Get the current weather for a given city."""
-    return f"Weather in {city}: 24°C, Sunny"
+    """Return the requested city name."""
+    return f"The city name is {city}."
 
-if __name__ == "__main__":
-    # HTTP server start karega port 8000 pe
-    mcp.run(transport="http", port=8000)  # runs on streaming 
-
- 
-#arrasts = [5 , 3 , 2 , 1]  # byusing the help of index here i will insert here okay bhau right okay bhai right
-
-# for i in range( 1, len(arrasts)) :
-
-#     current_vals = arrasts[i]
-
-#     j = i -1 
-
-#     while j>=0 and arrasts[j] > current_vals :
-
-#         arrasts[j+1] = arrasts[j]
-
-#         j = j -1 
-
-#     arrasts[j+1] = current_vals
-
-
-# print(arrasts)
-
-
-
-# understant this is our problems okay bhai 
-
-# liststring = ["flowers" , "flower" , "flows"]
-
-# chat = ""
-
-# for n in range(len(liststring[0])) : 
-
-#     for i in liststring :   # need the eitwhy this first one has  7 words okay bhai right but compare to all hasve less words okay bhai right 
-
-#         if n == len(i) or  i[n] != liststring[0][n] :
-#             print(chat)
-#             exit()
-
-#     chat+= liststring[0][n]  
-
-
-# print(chat)
-
-
- 
- # selectio sort righ okay 
-
-
-
-# numbvers = [5 , 4, 3 , 2 , 1 ]
-
-# def selectionsort(nums) :
-
-#     for i in range(len(nums)-1) :
-
-#         minpoint = i 
-
-#         for j in range(i+1, len(nums))  : 
-
-#             if nums[minpoint] > nums[j] : 
-
-#                 minpoint = j   
-        
-#         temp = nums[i]
-
-#         nums[i] = nums[minpoint]
 
-#         nums[minpoint] = temp
 
-#     return nums
 
-# print(selectionsort(numbvers))
-
-
-
-# inserdsort cpde 
-
-# arrays = [5 , 4 , 3 , 2 ,1]
-
-# def Selectionsortalgorithm(nums) : 
-
-#     for i in range(len(arrays)) : 
-
-#         minpoint = i 
-
-#         for j in range( i + 1 , len(arrays)) :
-
-#             if arrays[minpoint] > arrays[j] :
-
-#                 minpoint = j 
-        
-#         temp = arrays[i]  # [1 , 2 , 3 , 4 ]
-
-#         arrays[i] = arrays[minpoint]
-
-#         arrays[minpoint] = temp
-#     return arrays
-
-
-# print(Selectionsortalgorithm(arrays))
-
-
-
-# count the frequency bhai okay 
-
-# name = "Ashish"
-
-# def countletter(name)  :
-
-#     result = {}
-
-#     for i in name : 
-
-#         if i not in result : 
-
-#             result[i] = 1 
-#         else:
-
-#           result[i]+= 1  
-
-#     return result
-
-# print(countletter(name))
-
-
-# heights = [7, 3, 6, 4, 6, 2]
-
-# def rainwatertrapped(height):
-#     rainwatertrapped = 0
-
-#     for n in range(len(height)):
-#         left_max = max(height[:n+1])  
-#         right_max = max(height[n:])
-
-#         waterlevel = min(left_max, right_max)
-
-#         rainwatertrapped += max(0, waterlevel - height[n])
-
-#     return rainwatertrapped
-
-# print(rainwatertrapped(heights))
+if __name__ == "__main__":
+    mcp.run(transport="http", host="127.0.0.1", port=8000)
 
 
-# here we are learning the insertion algorith bhai okay 
 
