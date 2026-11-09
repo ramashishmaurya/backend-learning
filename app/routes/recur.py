@@ -146,14 +146,26 @@
 #     backgroundtask.add_task(functiongetdata) 
 
 
-def numberadd(x) :
+# def numberadd(x) :
 
-    return x + 2 
+#     return x + 2 
 
-def test_answer():
-    assert numberadd(3) == 5 
-
-
-test_answer()
+# def test_answer():
+#     assert numberadd(3) == 5 
 
 
+# test_answer()
+
+# as rih make sens eas righ as planned right  as planned right laky
+
+
+# print string builder 
+
+def printstringbuilder(n:int , lastplacee : int ) :
+
+    stringbuilder = ""
+
+    if (lastplacee == 0):
+        stringbuilder += "0"
+
+        
