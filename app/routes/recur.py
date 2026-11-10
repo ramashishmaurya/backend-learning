@@ -161,11 +161,35 @@
 
 # print string builder 
 
-def printstringbuilder(n:int , lastplacee : int ) :
+# def printstringbuilder(n:int , lastplacee : int ) :
 
-    stringbuilder = ""
+#     stringbuilder = ""
 
-    if (lastplacee == 0):
-        stringbuilder += "0"
+#     if (lastplacee == 0):
+#         stringbuilder += "0"
+ 
+def generator(n , s ) :  # here n -->> defined n defined the lenght of string 
 
-        
+    if len(s) ==n :
+        print(s)
+        return  
+    
+    generator(n , s + "0")
+
+    if len(s) == 0 or s[-1] == "0" :
+
+        generator(n , s + "1")
+
+
+
+n = 3 
+
+generator(n , "")
+
+
+
+    
+print(generator(0 , ""))
+
+ 
+
