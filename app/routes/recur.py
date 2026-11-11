@@ -172,24 +172,19 @@ def generator(n , s ) :  # here n -->> defined n defined the lenght of string
 
     if len(s) ==n :
         print(s)
-        return  
+        return   
     
-    generator(n , s + "0")
+    generator(n , s + "0")  #  this is itself called bhai okay right 
 
     if len(s) == 0 or s[-1] == "0" :
 
         generator(n , s + "1")
 
-
-
+ 
 n = 3 
 
 generator(n , "")
 
-
-
-    
 print(generator(0 , ""))
 
- 
 
