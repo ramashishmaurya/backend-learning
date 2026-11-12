@@ -21,6 +21,7 @@ dependencies = [
     "openai",
     "passlib[bcrypt]",
     "prefab-ui>=0.20.2",
+    "psycopg2-binary>=2.9.13",
     "pydantic",
     "pymupdf>=1.28.2",
     "python-dotenv",

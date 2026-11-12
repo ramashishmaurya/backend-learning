@@ -64,3 +64,4 @@ def get_users_v2():
 # Mount both routers onto application
 app.include_router(v1_router)
 app.include_router(v2_router)
+
