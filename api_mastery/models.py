@@ -7,7 +7,7 @@ Includes primary keys, unique constraints, foreign keys, and indexes.
 ================================================================================
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone 
 from typing import List, Optional
 from sqlalchemy import String, Integer, Float, Boolean, DateTime, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship

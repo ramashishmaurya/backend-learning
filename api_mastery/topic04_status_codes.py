@@ -85,3 +85,4 @@ def get_confidential_salaries(authorization: Optional[str] = Header(None)):
         )
 
     return {"secret_salaries": {"CEO": 5000000, "VP": 3500000}}
+

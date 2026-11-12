@@ -34,7 +34,7 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, Query, status
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy import select, func, text
+from sqlalchemy import select, func, text, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_mastery.database import engine, Base, get_db
@@ -82,6 +82,21 @@ class UserCreate(BaseModel):
     age: int = Field(..., ge=18, le=100, description="Must be an adult (18+)")
     password: str = Field(..., min_length=6, description="Plain text password")
 
+class UserUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    age: Optional[int] = Field(None, ge=18, le=100)
+    is_active: Optional[bool] = None
+
+class OrderResponse(BaseModel):
+    id: int
+    user_id: int
+    total_amount: float
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 class UserResponse(BaseModel):
     id: int
     name: str
@@ -91,7 +106,19 @@ class UserResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        from_attributes = True  # Allows Pydantic to read directly from SQLAlchemy ORM models!
+        from_attributes = True
+
+class UserWithOrdersResponse(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    age: int
+    is_active: bool
+    created_at: datetime
+    orders: List[OrderResponse] = []
+
+    class Config:
+        from_attributes = True
 
 class ProductCreate(BaseModel):
     sku: str = Field(..., min_length=3, max_length=50, description="Unique product SKU")
@@ -100,24 +127,44 @@ class ProductCreate(BaseModel):
     category: str = Field(..., min_length=2, max_length=100)
     price: float = Field(..., gt=0)
     stock: int = Field(..., ge=0)
+    is_active: bool = True
+
+class ProductUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=2, max_length=200)
+    description: Optional[str] = None
+    category: Optional[str] = Field(None, min_length=2, max_length=100)
+    price: Optional[float] = Field(None, gt=0)
+    stock: Optional[int] = Field(None, ge=0)
+    is_active: Optional[bool] = None
 
 class ProductResponse(BaseModel):
     id: int
     sku: str
     title: str
+    description: Optional[str] = None
     category: str
     price: float
     stock: int
+    is_active: bool
+    created_at: datetime
 
     class Config:
         from_attributes = True
+
+class OrderCreate(BaseModel):
+    user_id: int = Field(..., description="ID of the user placing the order")
+    total_amount: float = Field(..., gt=0, description="Order total in INR")
+    status: str = Field("PENDING", description="Status: PENDING, PAID, SHIPPED, DELIVERED, CANCELLED")
+
+class OrderStatusUpdate(BaseModel):
+    status: str = Field(..., description="New status: PENDING, PAID, SHIPPED, DELIVERED, CANCELLED")
 
 
 # ------------------------------------------------------------------------------
 # 3. DATABASE HEALTH CHECK ENDPOINT
 # ------------------------------------------------------------------------------
 @app.get("/db/health", tags=["Database Health"])
-async def check_db_health(db: AsyncSession = Depends(get_db)):
+async def check_db_health(db: AsyncSession = Depends(get_db)):  
     """
     Pings the PostgreSQL database with `SELECT 1` and returns round-trip latency.
     Use this to verify your `.env` connection string!
@@ -191,6 +238,62 @@ async def get_all_users_from_db(db: AsyncSession = Depends(get_db)):
     query = select(UserModel).order_by(UserModel.id.desc())
     result = await db.execute(query)
     return result.scalars().all()
+
+
+@app.get(
+    "/users/{user_id}",
+    response_model=UserWithOrdersResponse,
+    tags=["Users (PostgreSQL)"],
+    summary="Fetch single user with their orders by ID"
+)
+async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db)):
+    """Executes: `SELECT * FROM users WHERE id = :user_id;` with eager-loaded orders."""
+    query = select(UserModel).where(UserModel.id == user_id)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {user_id} not found.")
+    return user
+
+
+@app.put(
+    "/users/{user_id}",
+    response_model=UserResponse,
+    tags=["Users (PostgreSQL)"],
+    summary="Update user details"
+)
+async def update_user(user_id: int, payload: UserUpdate, db: AsyncSession = Depends(get_db)):
+    query = select(UserModel).where(UserModel.id == user_id)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {user_id} not found.")
+
+    update_data = payload.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+@app.delete(
+    "/users/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    tags=["Users (PostgreSQL)"],
+    summary="Delete user by ID (cascades orders)"
+)
+async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(UserModel).where(UserModel.id == user_id)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {user_id} not found.")
+
+    await db.delete(user)
+    await db.commit()
+    return None
 
 
 # ------------------------------------------------------------------------------
@@ -308,3 +411,214 @@ async def get_products_cursor_from_db(
         },
         "items": page_items
     }
+
+
+# ------------------------------------------------------------------------------
+# 7. REAL DATABASE PRODUCT SEARCH, FILTER & CRUD
+# ------------------------------------------------------------------------------
+@app.get(
+    "/products",
+    response_model=List[ProductResponse],
+    tags=["Products (PostgreSQL)"],
+    summary="Filter, search and sort products directly in PostgreSQL"
+)
+async def get_products_catalog(
+    q: Optional[str] = Query(None, description="Search keyword in title or description"),
+    category: Optional[str] = Query(None, description="Filter by category (e.g. Electronics, Books)"),
+    min_price: Optional[float] = Query(None, ge=0, description="Minimum price filter"),
+    max_price: Optional[float] = Query(None, ge=0, description="Maximum price filter"),
+    sort_by: str = Query("id", pattern="^(id|price|title|created_at)$", description="Field to sort by"),
+    order: str = Query("asc", pattern="^(asc|desc)$", description="Sort direction: asc or desc"),
+    limit: int = Query(50, ge=1, le=100),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Executes dynamic parameterized SQL with WHERE filters and ILIKE full-text searches.
+    """
+    query = select(ProductModel)
+
+    if category:
+        query = query.where(func.lower(ProductModel.category) == category.lower())
+    if min_price is not None:
+        query = query.where(ProductModel.price >= min_price)
+    if max_price is not None:
+        query = query.where(ProductModel.price <= max_price)
+    if q:
+        search_pattern = f"%{q.lower()}%"
+        query = query.where(
+            or_(
+                func.lower(ProductModel.title).like(search_pattern),
+                func.lower(ProductModel.description).like(search_pattern)
+            )
+        )
+
+    sort_col = getattr(ProductModel, sort_by)
+    query = query.order_by(sort_col.desc() if order == "desc" else sort_col.asc()).limit(limit)
+
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
+@app.get(
+    "/products/{prod_id}",
+    response_model=ProductResponse,
+    tags=["Products (PostgreSQL)"],
+    summary="Fetch single product by ID"
+)
+async def get_product_by_id(prod_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(ProductModel).where(ProductModel.id == prod_id)
+    result = await db.execute(query)
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail=f"Product with ID {prod_id} not found.")
+    return product
+
+
+@app.patch(
+    "/products/{prod_id}",
+    response_model=ProductResponse,
+    tags=["Products (PostgreSQL)"],
+    summary="Update product details or stock"
+)
+async def update_product(prod_id: int, payload: ProductUpdate, db: AsyncSession = Depends(get_db)):
+    query = select(ProductModel).where(ProductModel.id == prod_id)
+    result = await db.execute(query)
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail=f"Product with ID {prod_id} not found.")
+
+    update_data = payload.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(product, key, value)
+
+    await db.commit()
+    await db.refresh(product)
+    return product
+
+
+@app.delete(
+    "/products/{prod_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    tags=["Products (PostgreSQL)"],
+    summary="Delete product by ID"
+)
+async def delete_product(prod_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(ProductModel).where(ProductModel.id == prod_id)
+    result = await db.execute(query)
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail=f"Product with ID {prod_id} not found.")
+
+    await db.delete(product)
+    await db.commit()
+    return None
+
+
+# ------------------------------------------------------------------------------
+# 8. REAL DATABASE ORDERS OPERATIONS
+# ------------------------------------------------------------------------------
+@app.post(
+    "/orders",
+    response_model=OrderResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["Orders (PostgreSQL)"],
+    summary="Place a new order in PostgreSQL"
+)
+async def create_order_in_db(payload: OrderCreate, db: AsyncSession = Depends(get_db)):
+    """Verifies user_id exists in users table, then inserts order record."""
+    user_query = select(UserModel).where(UserModel.id == payload.user_id)
+    user = (await db.execute(user_query)).scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {payload.user_id} does not exist.")
+
+    order = OrderModel(
+        user_id=payload.user_id,
+        total_amount=payload.total_amount,
+        status=payload.status.upper()
+    )
+    db.add(order)
+    await db.commit()
+    await db.refresh(order)
+    return order
+
+
+@app.get(
+    "/orders",
+    response_model=List[OrderResponse],
+    tags=["Orders (PostgreSQL)"],
+    summary="Fetch all orders with optional status filter"
+)
+async def get_all_orders(
+    status_filter: Optional[str] = Query(None, description="Filter by status (e.g. DELIVERED, PENDING)"),
+    db: AsyncSession = Depends(get_db)
+):
+    query = select(OrderModel).order_by(OrderModel.id.desc())
+    if status_filter:
+        query = query.where(func.upper(OrderModel.status) == status_filter.upper())
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
+@app.get(
+    "/orders/{order_id}",
+    response_model=OrderResponse,
+    tags=["Orders (PostgreSQL)"],
+    summary="Fetch single order by ID"
+)
+async def get_order_by_id(order_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(OrderModel).where(OrderModel.id == order_id)
+    result = await db.execute(query)
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found.")
+    return order
+
+
+@app.patch(
+    "/orders/{order_id}/status",
+    response_model=OrderResponse,
+    tags=["Orders (PostgreSQL)"],
+    summary="Update order status"
+)
+async def update_order_status(order_id: int, payload: OrderStatusUpdate, db: AsyncSession = Depends(get_db)):
+    query = select(OrderModel).where(OrderModel.id == order_id)
+    result = await db.execute(query)
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found.")
+
+    order.status = payload.status.upper()
+    await db.commit()
+    await db.refresh(order)
+    return order
+
+
+@app.delete(
+    "/orders/{order_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    tags=["Orders (PostgreSQL)"],
+    summary="Cancel / Delete order by ID"
+)
+async def delete_order(order_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(OrderModel).where(OrderModel.id == order_id)
+    result = await db.execute(query)
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found.")
+
+    await db.delete(order)
+    await db.commit()
+    return None
+
+
+@app.get(
+    "/users/{user_id}/orders",
+    response_model=List[OrderResponse],
+    tags=["Orders (PostgreSQL)"],
+    summary="Fetch all orders belonging to a specific user"
+)
+async def get_user_orders(user_id: int, db: AsyncSession = Depends(get_db)):
+    """Executes: `SELECT * FROM orders WHERE user_id = :user_id ORDER BY id DESC;`"""
+    query = select(OrderModel).where(OrderModel.user_id == user_id).order_by(OrderModel.id.desc())
+    result = await db.execute(query)
+    return result.scalars().all()

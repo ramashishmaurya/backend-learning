@@ -93,7 +93,7 @@ def get_normalized_database_url() -> str:
     return clean_url
 
 
-DATABASE_URL = get_normalized_database_url()
+DATABASE_URL = get_normalized_database_url()  
 
 
 # ==============================================================================
@@ -152,3 +152,5 @@ async def get_db():
             raise
         finally:
             await session.close()
+
+

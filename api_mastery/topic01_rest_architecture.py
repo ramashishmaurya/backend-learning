@@ -27,7 +27,7 @@ from typing import Optional
 
 app = FastAPI(
     title="Topic 01: REST Architecture Principles",
-    description="Demonstrates REST Statelessness and Uniform Interface constraints."
+    description="Demonstrates REST Statelessness and Uniform Interface constraints."  
 )
 
 # Stateless Simulation: We authenticate each request independently via a Bearer token.
@@ -39,11 +39,11 @@ class ServerStateInfo(BaseModel):
 
 @app.get(
     "/api/rest-info",
-    response_model=ServerStateInfo,
+    response_model=ServerStateInfo, 
     tags=["REST Core Principles"],
     summary="Stateless REST demonstration"
 )
-def get_rest_info(authorization: Optional[str] = Header(None)):
+def get_rest_info(authorization: Optional[str] = Header(None)):   
     """
     In a stateless REST architecture:
     - Every request brings its own token / authorization header.
