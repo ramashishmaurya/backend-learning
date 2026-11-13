@@ -210,3 +210,11 @@ def postinformation(details: studentdetail):
     return {"message": f"user successfully created account with name {details.name}"}
 
 
+@app.middleware("http")
+async def my_middleware(request , call_next) :
+
+    response = await call_next(request)
+
+    return response
+
+
