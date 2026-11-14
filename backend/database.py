@@ -49,11 +49,7 @@ async def get_db():
             await session.rollback()
             raise
         finally:
-            await session.close()
+            await session.close()   
 
-
-
-
-
-
+# this is create teh session with database one session commplted it will remove the session okay 
 
