@@ -127,9 +127,11 @@
 def lengthofstringusingrecur(n, index=0):
 
     if index == len(n):
-        return index
+        return index  
 
     return lengthofstringusingrecur(n, index + 1) 
 
+print(lengthofstringusingrecur("Ashish"))  
 
-print(lengthofstringusingrecur("Ashish"))
+
+
