@@ -124,14 +124,35 @@
 
 # program to find length of strings using the recursive 
 
-def lengthofstringusingrecur(n, index=0):
+# def lengthofstringusingrecur(n, index=0):
 
-    if index == len(n):
-        return index  
+#     if index == len(n):
+#         return index  
 
-    return lengthofstringusingrecur(n, index + 1) 
+#     return lengthofstringusingrecur(n, index + 1) 
 
-print(lengthofstringusingrecur("Ashish"))  
+# print(lengthofstringusingrecur("Ashish"))  
+
+# how i have to focused as  make sense ashow i can do as righ as maek sesense ahow i can do as right as make sense ashow ic an do  as righ make sense how 
 
 
+
+def countSubstrings(S, i=0, j=0):  # "abca"   "" --  return 0 
+
+    if i == len(S):
+        return 0
+
+    if j == len(S):
+        return countSubstrings(S, i + 1, i + 1) 
+
+    count = 0
+
+    if S[i] == S[j]:  
+        count = 1
+
+    return count + countSubstrings(S, i, j + 1)
+
+
+S = "abcab"
+print(countSubstrings(S))
 

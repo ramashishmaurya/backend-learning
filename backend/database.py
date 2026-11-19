@@ -17,7 +17,7 @@ from sqlalchemy.orm import DeclarativeBase
 load_dotenv()
 
 # Read from .env, or use PostgreSQL connection for 'design' DB
-DEFAULT_URL = "postgresql+asyncpg://postgres:ashish123@localhost:5432/design"
+DEFAULT_URL = "postgresql+asyncpg://postgres:ashish45778@localhost:5432/design"
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_URL)
 
 # Create Async Engine with connection pooling
